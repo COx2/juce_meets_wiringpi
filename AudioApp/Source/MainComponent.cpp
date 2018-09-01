@@ -9,16 +9,16 @@
 #include "MainComponent.h"
 
 namespace {
-	const int PIN_LED1 = 21;
-	const int PIN_SW1 = 21;
+	const int PIN_LED1 = 15;
+	const int PIN_SW1 = 4;
 }
 
 //==============================================================================
 MainComponent::MainComponent()
 	:WIRING_PI_ENABLE(false)
 	, pinValue_SW1(0)
-	, paramSwitch1(Range<int>(0, 1024))
-	, switch1Slider(Slider::SliderStyle::RotaryHorizontalVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox)
+	, paramSwitch1(Range<int>(0, 1))
+	, switch1Slider(Slider::SliderStyle::LinearBarVertical, Slider::TextEntryBoxPosition::NoTextBox)
 {
     // Make sure you set the size of the component after
     // you add any child components.
