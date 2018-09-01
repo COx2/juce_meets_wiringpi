@@ -1,0 +1,21 @@
+https://shell-mag.com/raspi_original_code/
+
+LED1 = 14
+LED2 = 15
+LED3 = 12
+LED4 = 16
+ 
+SW1 = 4
+SW2 = 17
+SW3 = 5
+SW4 = 6
+
+BOTHER = 18
+
+LED5_R = 20
+LED5_G = 22
+LED5_B = 27
+ 
+LED6_R = 26
+LED6_G = 19
+LED6_B = 13
