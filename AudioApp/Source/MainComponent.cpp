@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     This file was auto-generated!
@@ -8,8 +8,17 @@
 
 #include "MainComponent.h"
 
+namespace {
+	const int PIN_LED1 = 21;
+	const int PIN_SW1 = 21;
+}
+
 //==============================================================================
 MainComponent::MainComponent()
+	:WIRING_PI_ENABLE(false)
+	, pinValue_SW1(0)
+	, paramSwitch1(Range<int>(0, 1024))
+	, switch1Slider(Slider::SliderStyle::RotaryHorizontalVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox)
 {
     // Make sure you set the size of the component after
     // you add any child components.
@@ -17,6 +26,25 @@ MainComponent::MainComponent()
 
     // specify the number of input and output channels that we want to open
     setAudioChannels (2, 2);
+	
+	switch1Slider.setRange(paramSwitch1.getStart(), paramSwitch1.getEnd(), 0.01);
+	switch1Slider.setValue(paramSwitch1.getStart(), dontSendNotification);
+	switch1Slider.setPopupDisplayEnabled(true, true, this);
+	switch1Slider.setPopupMenuEnabled(true);
+	addAndMakeVisible(switch1Slider);
+
+#ifndef WIN32
+	// WiringPi初期化
+	if (wiringPiSetupGpio() < 0) {
+		printf("GPIO ERROR\n");
+		WIRING_PI_ENABLE = true;
+		return;
+	}
+	pinMode(PIN_LED1, OUTPUT); //出力モードに切り替え
+	pinMode(PIN_SW1, INPUT); //入力モードに切り替え
+#endif
+
+	startTimerHz(60);
 }
 
 MainComponent::~MainComponent()
@@ -70,4 +98,27 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+	Rectangle<int> bounds = getLocalBounds(); // コンポーネント基準の値
+
+	switch1Slider.setBounds(bounds.reduced(100));
+}
+
+void MainComponent::timerCallback()
+{
+#ifndef WIN32
+	pinValue_LED1 = !pinValue_LED1;
+	digitalWrite(PIN_LED1, (int)pinValue_LED1); //Lチカ
+
+	pinValue_SW1 = digitalRead(PIN_SW1);
+
+	switch1Slider.setValue(pinValue_SW1, dontSendNotification);
+#endif // !WIN32
+
+#ifdef WIN32
+	DBG(pinValue_SW1);
+
+	++pinValue_SW1;
+	switch1Slider.setValue(pinValue_SW1, dontSendNotification);
+#endif
+
 }
